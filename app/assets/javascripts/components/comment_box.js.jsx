@@ -10,12 +10,18 @@ var CommentBox = React.createClass({
     }.bind(this))
   },
 
+  handleCommentSubmit(comment) {
+    var comments = this.state.comments;
+    var newComments = comments.concat([comment]);
+    this.setState({comments: newComments});
+  },
+
   render() {
     return (
       <div className="commentBox">
         <h1>Comments</h1>
         <CommentList comments={this.state.comments} />
-        <CommentForm />
+        <CommentForm onCommentSubmit={this.handleCommentSubmit} />
       </div>
     )
   }
@@ -40,10 +46,30 @@ var CommentList = React.createClass({
 })
 
 var CommentForm = React.createClass({
+  handleSubmit(e) {
+    e.preventDefault();
+    var author = React.findDOMNode(this.refs.author).value.trim();
+    var text = React.findDOMNode(this.refs.text).value.trim();
+
+    if (!text || !author) {
+      return;
+    }
+
+    this.props.onCommentSubmit({author: author, text: text});
+
+    React.findDOMNode(this.refs.author).value = '';
+    React.findDOMNode(this.refs.text).value = '';
+    return;
+  },
+
   render() {
     return (
       <div className="commentForm">
-        Hello, world! I am a CommentForm.
+      <form className="commentForm" onSubmit={this.handleSubmit}>
+        <input type="text" placeholder="Your name" ref="author" />
+        <input type="text" placeholder="Say something..." ref="text" />
+        <input type="submit" value="Post" />
+      </form>
       </div>
     )
   }
