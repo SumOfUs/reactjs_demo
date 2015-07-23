@@ -1,10 +1,20 @@
 
 var CommentBox = React.createClass({
+  getInitialState() {
+    return {comments: []};
+  },
+
+  componentDidMount() {
+    $.get('/comments.json', function(comments){
+      this.setState({comments: comments});
+    }.bind(this))
+  },
+
   render() {
     return (
       <div className="commentBox">
         <h1>Comments</h1>
-        <CommentList comments={this.props.comments} />
+        <CommentList comments={this.state.comments} />
         <CommentForm />
       </div>
     )
